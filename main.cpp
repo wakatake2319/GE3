@@ -1498,10 +1498,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// ゲーム処理
 
-			// スペースキーが押されたらbreak
-			//if (key[DIK_SPACE]) {
-			//	assert(false && "break on space key");
-			//}
+
 
 			// 開発用のUIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 			ImGui::ShowDemoWindow();
@@ -1641,6 +1638,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			assert(SUCCEEDED(hr));
 			hr = commandList->Reset(commandAllocator.Get(), nullptr);
 			assert(SUCCEEDED(hr));
+
+			// エスケープキーが押されたらbreak
+			if (key[DIK_ESCAPE]) {
+				OutputDebugStringA("Game Loop End\n");
+				break;
+			}
+
+
 		}
 	}
 
