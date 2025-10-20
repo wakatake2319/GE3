@@ -31,6 +31,8 @@
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#define DIRECTINPUT_VERSION 0x0800 // DirectInputのバージョン指定
+#include <dinput.h>
 
 
 
@@ -43,6 +45,9 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #pragma comment(lib, "dxguid.lib")
 // DXC
 #pragma comment(lib, "dxcompiler.lib")
+#pragma comment(lib, "dinput8.lib")
+
+
 
 struct Vector4 {
 	float x, y, z, w;
@@ -633,6 +638,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	    nullptr               // オプション
 	);
 
+
+
 // ===================================
 // エラー表示
 // ===================================
@@ -1010,6 +1017,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 実際に生成
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 	hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+	assert(SUCCEEDED(hr));
+
+
+	// DirectInputの初期化
+	IDirectInput8* directInput = nullptr;
+	hr = DirectInput8Create(wc.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
+	assert(SUCCEEDED(hr));
+
+	// キーボードデバイスの生成
+	IDirectInputDevice8* keyboardDevice = nullptr;
+	hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboardDevice, NULL);
+	assert(SUCCEEDED(hr));
+
+	// キーボードデバイスの協調レベルの設定
+	hr = keyboardDevice->SetDataFormat(&c_dfDIKeyboard);
+	assert(SUCCEEDED(hr));
+
+	// 排他制御レベルのセット
+	hr = keyboardDevice->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(hr));
 
 	// =======================================================================================
@@ -1403,6 +1429,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			DispatchMessage(&msg);
 		} else {
 
+			// キーボード情報の取得開始
+			keyboardDevice->Acquire();
+			// キーボードの状態を取得
+			BYTE key[256] = {};
+			keyboardDevice->GetDeviceState(sizeof(key), key);
+
+
+			
+
+
 			ImGui_ImplDX12_NewFrame();
 			ImGui_ImplWin32_NewFrame();
 			ImGui::NewFrame();
@@ -1461,6 +1497,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			// ゲーム処理
+
+			// スペースキーが押されたらbreak
+			//if (key[DIK_SPACE]) {
+			//	assert(false && "break on space key");
+			//}
 
 			// 開発用のUIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 			ImGui::ShowDemoWindow();
