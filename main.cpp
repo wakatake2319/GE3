@@ -1023,7 +1023,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 入力の初期化
 	input = new Input();
 	input->Initialize(wc.hInstance,hwnd);
-	input->Update();
 
 
 	// =======================================================================================
@@ -1405,7 +1404,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	// キーボードの状態を取得
-	//BYTE key[256] = {};
 	//BYTE preKey[256] = {};
 
 
@@ -1425,7 +1423,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//memcpy(preKey, key, 256);
 
 
-			
+				input->Update();
+
 
 
 			ImGui_ImplDX12_NewFrame();
@@ -1485,10 +1484,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-			// ゲーム処理
-			//if (key[DIK_SPACE] && !preKey[DIK_SPACE]) {
-   			//	OutputDebugStringA("Press Space\n");
-			//}
 
 
 			// 開発用のUIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える

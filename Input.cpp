@@ -1,5 +1,4 @@
 #include "Input.h"
-#include <wrl.h>
 
 
 
@@ -10,7 +9,6 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 	HRESULT hr;
 
 	// DirectInputの初期化
-	ComPtr<IDirectInput8> directInput = nullptr;
 	hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
 	assert(SUCCEEDED(hr));
 
@@ -31,13 +29,37 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 // 更新処理
 void Input::Update() {
 
+	// 前回のキーの状態を保存
+	memcpy(preKey, key, sizeof(key));
+
 	// キーボード情報の取得開始
 	keyboardDevice->Acquire();
-	// キーボードの状態取得
-	//memcpy(preKey, key, 256);
 
-	// 全キーの入力情報を取得する
-	BYTE key[256] = {};
 	keyboardDevice->GetDeviceState(sizeof(key), key);
 
+	// ゲーム処理
+	if (TriggerKey(DIK_SPACE)) {
+		OutputDebugStringA("Press Space\n");
+	}
+
+}
+
+// キーが押されたかどうかを調べる関数
+bool Input::PushKey(BYTE keyNumber) {
+	// 指定キーが押せていればtrueを返す
+	if (key[keyNumber]) {
+		return true;
+	}
+	// 押されていなければfalseを返す
+	return false;
+}
+
+// キーがトリガーされたかどうかを調べる関数
+bool Input::TriggerKey(BYTE keyNumber) {
+	//  指定キーが押せていればtrueを返す
+	if (key[keyNumber] && !preKey[keyNumber]) {
+		return true;
+	}
+	// 押されていなければfalseを返す
+	return false;
 }

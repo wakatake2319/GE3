@@ -20,15 +20,18 @@ public:
 	void Initialize(HINSTANCE hInstance, HWND hwnb);
 	void Update();
 
+	bool PushKey(BYTE keyNumber);
+
+	bool TriggerKey(BYTE keyNumber);
+
 private:
 	// DirectInput
-	//IDirectInput8* directInput;
+	ComPtr<IDirectInput8> directInput;
 
 	// キーボードデバイス
 	ComPtr<IDirectInputDevice8> keyboardDevice;
 
-
-	//WNDCLASS wc{};
-
-	//HWND hwnd = nullptr;
+	// キーの状態
+	BYTE key[256] = {};
+	BYTE preKey[256] = {};
 };
