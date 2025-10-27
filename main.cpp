@@ -31,7 +31,9 @@
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
+#define DIRECTINPUT_VERSION 0x0800 // DirectInputのバージョン指定
+#include <dinput.h>
+#include "Input.h"
 
 
 
@@ -43,6 +45,9 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #pragma comment(lib, "dxguid.lib")
 // DXC
 #pragma comment(lib, "dxcompiler.lib")
+#pragma comment(lib, "dinput8.lib")
+
+
 
 struct Vector4 {
 	float x, y, z, w;
@@ -633,6 +638,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	    nullptr               // オプション
 	);
 
+
+
 // ===================================
 // エラー表示
 // ===================================
@@ -1011,6 +1018,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 	hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
+
+	Input* input = nullptr;
+	// 入力の初期化
+	input = new Input();
+	input->Initialize(wc.hInstance,hwnd);
+
 
 	// =======================================================================================
 	// ================================
@@ -1391,6 +1404,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
+
 	// ==============================
 	// ゲームループ
 	// ==============================
@@ -1402,6 +1416,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
+
+
+			input->Update();
+
+
 
 			ImGui_ImplDX12_NewFrame();
 			ImGui_ImplWin32_NewFrame();
@@ -1460,7 +1479,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-			// ゲーム処理
+
 
 			// 開発用のUIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 			ImGui::ShowDemoWindow();
@@ -1600,16 +1619,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			assert(SUCCEEDED(hr));
 			hr = commandList->Reset(commandAllocator.Get(), nullptr);
 			assert(SUCCEEDED(hr));
+
+			// エスケープキーが押されたらbreak
+			//if (key[DIK_ESCAPE] && !preKey[DIK_ESCAPE]) {
+			//	OutputDebugStringA("Game Loop End\n");
+			//	break;
+			//}
+
+
 		}
+
+		
 	}
 
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-
-	// 解放処理
-
-
 
 
 
@@ -1617,5 +1642,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	CoUninitialize();
+
+	// 解放処理
+	delete input;
+
 	return 0;
 }
