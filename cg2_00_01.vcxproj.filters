@@ -22,9 +22,6 @@
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Math.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -50,6 +47,9 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

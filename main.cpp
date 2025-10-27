@@ -33,7 +33,7 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #define DIRECTINPUT_VERSION 0x0800 // DirectInputのバージョン指定
 #include <dinput.h>
-
+#include "Input.h"
 
 
 
@@ -1019,24 +1019,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	hr = device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
 
+	Input* input = nullptr;
+	// 入力の初期化
+	input = new Input();
+	input->Initialize(wc.hInstance,hwnd);
 
-	// DirectInputの初期化
-	IDirectInput8* directInput = nullptr;
-	hr = DirectInput8Create(wc.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
-	assert(SUCCEEDED(hr));
-
-	// キーボードデバイスの生成
-	IDirectInputDevice8* keyboardDevice = nullptr;
-	hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboardDevice, NULL);
-	assert(SUCCEEDED(hr));
-
-	// キーボードデバイスの協調レベルの設定
-	hr = keyboardDevice->SetDataFormat(&c_dfDIKeyboard);
-	assert(SUCCEEDED(hr));
-
-	// 排他制御レベルのセット
-	hr = keyboardDevice->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	assert(SUCCEEDED(hr));
+	//// DirectInputの初期化
+	//IDirectInput8* directInput = nullptr;
+	//hr = DirectInput8Create(wc.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
+	//assert(SUCCEEDED(hr));
+	//
+	//// キーボードデバイスの生成
+	//IDirectInputDevice8* keyboardDevice = nullptr;
+	//hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboardDevice, NULL);
+	//assert(SUCCEEDED(hr));
+	//
+	//// キーボードデバイスの協調レベルの設定
+	//hr = keyboardDevice->SetDataFormat(&c_dfDIKeyboard);
+	//assert(SUCCEEDED(hr));
+	//
+	//// 排他制御レベルのセット
+	//hr = keyboardDevice->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	//assert(SUCCEEDED(hr));
 
 	// =======================================================================================
 	// ================================
@@ -1416,6 +1420,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	directionalLightData->intensity = 1.0f;
 
 
+	// キーボードの状態を取得
+	BYTE key[256] = {};
+	BYTE preKey[256] = {};
+
 
 	// ==============================
 	// ゲームループ
@@ -1431,8 +1439,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// キーボード情報の取得開始
 			keyboardDevice->Acquire();
-			// キーボードの状態を取得
-			BYTE key[256] = {};
+			memcpy(preKey, key, 256);
 			keyboardDevice->GetDeviceState(sizeof(key), key);
 
 
@@ -1497,11 +1504,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			// ゲーム処理
+			if (key[DIK_SPACE] && !preKey[DIK_SPACE]) {
+   				OutputDebugStringA("Press Space\n");
+			}
 
-			// スペースキーが押されたらbreak
-			//if (key[DIK_SPACE]) {
-			//	assert(false && "break on space key");
-			//}
 
 			// 開発用のUIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 			ImGui::ShowDemoWindow();
@@ -1641,16 +1647,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			assert(SUCCEEDED(hr));
 			hr = commandList->Reset(commandAllocator.Get(), nullptr);
 			assert(SUCCEEDED(hr));
+
+			// エスケープキーが押されたらbreak
+			if (key[DIK_ESCAPE] && !preKey[DIK_ESCAPE]) {
+				OutputDebugStringA("Game Loop End\n");
+				break;
+			}
+
+
 		}
+
+		
 	}
 
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-
-	// 解放処理
-
-
 
 
 
@@ -1658,5 +1670,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	CoUninitialize();
+
+	// 解放処理
+	delete input;
+
 	return 0;
 }
