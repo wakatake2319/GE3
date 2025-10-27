@@ -1,5 +1,5 @@
 #include "Input.h"
-
+#include <wrl.h>
 
 
 
@@ -15,7 +15,6 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 	assert(SUCCEEDED(hr));
 
 	// キーボードデバイスの生成
-	ComPtr<IDirectInputDevice8> keyboardDevice;
 	hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboardDevice, NULL);
 	assert(SUCCEEDED(hr));
 
@@ -31,4 +30,14 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 
 // 更新処理
 void Input::Update() {
+
+	// キーボード情報の取得開始
+	keyboardDevice->Acquire();
+	// キーボードの状態取得
+	//memcpy(preKey, key, 256);
+
+	// 全キーの入力情報を取得する
+	BYTE key[256] = {};
+	keyboardDevice->GetDeviceState(sizeof(key), key);
+
 }

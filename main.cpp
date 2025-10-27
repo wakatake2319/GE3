@@ -1023,24 +1023,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 入力の初期化
 	input = new Input();
 	input->Initialize(wc.hInstance,hwnd);
+	input->Update();
 
-	//// DirectInputの初期化
-	//IDirectInput8* directInput = nullptr;
-	//hr = DirectInput8Create(wc.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
-	//assert(SUCCEEDED(hr));
-	//
-	//// キーボードデバイスの生成
-	//IDirectInputDevice8* keyboardDevice = nullptr;
-	//hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboardDevice, NULL);
-	//assert(SUCCEEDED(hr));
-	//
-	//// キーボードデバイスの協調レベルの設定
-	//hr = keyboardDevice->SetDataFormat(&c_dfDIKeyboard);
-	//assert(SUCCEEDED(hr));
-	//
-	//// 排他制御レベルのセット
-	//hr = keyboardDevice->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	//assert(SUCCEEDED(hr));
 
 	// =======================================================================================
 	// ================================
@@ -1421,8 +1405,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	// キーボードの状態を取得
-	BYTE key[256] = {};
-	BYTE preKey[256] = {};
+	//BYTE key[256] = {};
+	//BYTE preKey[256] = {};
 
 
 	// ==============================
@@ -1438,9 +1422,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		} else {
 
 			// キーボード情報の取得開始
-			keyboardDevice->Acquire();
-			memcpy(preKey, key, 256);
-			keyboardDevice->GetDeviceState(sizeof(key), key);
+			//memcpy(preKey, key, 256);
 
 
 			
@@ -1504,9 +1486,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			// ゲーム処理
-			if (key[DIK_SPACE] && !preKey[DIK_SPACE]) {
-   				OutputDebugStringA("Press Space\n");
-			}
+			//if (key[DIK_SPACE] && !preKey[DIK_SPACE]) {
+   			//	OutputDebugStringA("Press Space\n");
+			//}
 
 
 			// 開発用のUIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
@@ -1649,10 +1631,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			assert(SUCCEEDED(hr));
 
 			// エスケープキーが押されたらbreak
-			if (key[DIK_ESCAPE] && !preKey[DIK_ESCAPE]) {
-				OutputDebugStringA("Game Loop End\n");
-				break;
-			}
+			//if (key[DIK_ESCAPE] && !preKey[DIK_ESCAPE]) {
+			//	OutputDebugStringA("Game Loop End\n");
+			//	break;
+			//}
 
 
 		}

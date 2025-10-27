@@ -5,13 +5,16 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 #include <cassert>
-#include <wrl.h>
 #include <windows.h>
+#include <wrl.h>
 
 
-using namespace Microsoft::WRL;
 
 class Input {
+public:
+	// namespace省略
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 public:
 
 	void Initialize(HINSTANCE hInstance, HWND hwnb);
@@ -22,8 +25,7 @@ private:
 	//IDirectInput8* directInput;
 
 	// キーボードデバイス
-	//IDirectInputDevice8* keyboardDevice = nullptr;
-
+	ComPtr<IDirectInputDevice8> keyboardDevice;
 
 
 	//WNDCLASS wc{};
