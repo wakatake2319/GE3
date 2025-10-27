@@ -1403,8 +1403,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	directionalLightData->intensity = 1.0f;
 
 
-	// キーボードの状態を取得
-	//BYTE preKey[256] = {};
 
 
 	// ==============================
@@ -1419,11 +1417,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			DispatchMessage(&msg);
 		} else {
 
-			// キーボード情報の取得開始
-			//memcpy(preKey, key, 256);
 
-
-				input->Update();
+			input->Update();
 
 
 
