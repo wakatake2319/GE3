@@ -4,13 +4,16 @@
 
 
 // 初期化処理
-void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
+void Input::Initialize(WindowsAPI* windowsAPI) {
+
+	// 借りてきたWindowsAPIのインスタンスを記録
+	this->windowsAPI = windowsAPI;
 
 	// 関数が成功したかどうかをSUCCEEDEマクロで判断できる
 	HRESULT hr;
 
 	// DirectInputの初期化
-	hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
+	hr = DirectInput8Create(windowsAPI->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
 	assert(SUCCEEDED(hr));
 
 	// キーボードデバイスの生成
@@ -22,7 +25,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 	assert(SUCCEEDED(hr));
 
 	// 排他制御レベルのセット
-	hr = keyboardDevice->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	hr = keyboardDevice->SetCooperativeLevel(windowsAPI->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(hr));
 
 }
