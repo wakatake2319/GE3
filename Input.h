@@ -4,6 +4,7 @@
 #include <cassert>
 #include <windows.h>
 #include <wrl.h>
+#include "WindowsAPI.h"
 
 
 
@@ -14,7 +15,7 @@ public:
 
 public:
 
-	void Initialize(HINSTANCE hInstance, HWND hwnb);
+	void Initialize(WindowsAPI* windowsAPI);
 	void Update();
 
 	bool PushKey(BYTE keyNumber);
@@ -31,4 +32,8 @@ private:
 	// キーの状態
 	BYTE key[256] = {};
 	BYTE preKey[256] = {};
+
+	// WindowsAPI
+	WindowsAPI* windowsAPI = nullptr;
+
 };
