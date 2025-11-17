@@ -1386,7 +1386,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (windowsAPI->ProcessMessage()) {
 			// ゲームループを抜ける
 			break;
-		} else {
+		} 
 
 
 			input->Update();
@@ -1598,7 +1598,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//}
 
 
-		}
+		
 
 		
 	}
