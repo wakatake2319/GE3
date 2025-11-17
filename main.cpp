@@ -9,10 +9,7 @@
 #include <fstream>
 #include <sstream>
 // 時間を扱うライブラリ
-#include <cassert>
 #include <chrono>
-#include <d3d12.h>
-#include <dxgi1_6.h>
 // デバッグ用
 #include <dbghelp.h>
 #include <strsafe.h>
@@ -35,11 +32,10 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #include <dinput.h>
 #include "Input.h"
 #include "WindowsAPI.h"
+#include "DirectXBasics.h"
 
 
 
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
 // デバッグ用
 #pragma comment(lib, "Dbghelp.lib")
 // DXC
@@ -658,6 +654,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 適切なアダプタが見つからなかったので起動できない
 	assert(useAdapter != nullptr);
 
+	/*
 	Microsoft::WRL::ComPtr <ID3D12Device> device = nullptr;
 	// 機能レベルとログ出力用の文字列
 	D3D_FEATURE_LEVEL featureLevels[] = {D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0};
@@ -672,6 +669,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 	assert(device != nullptr);
 	Log(logStream, ConvertString(L"Complete create D3D12Device!!!\n"));
+	*/
 
 // ===================================
 // エラー表示
@@ -704,6 +702,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 #endif
 
+	/*
 	// コマンドキューを生成する
 	Microsoft::WRL::ComPtr <ID3D12CommandQueue> commandQueue = nullptr;
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
@@ -750,7 +749,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> dsvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
 
-	// p12から
 	// SwapCainからResourceを引っ張ってくる
 	Microsoft::WRL::ComPtr <ID3D12Resource> swapChainResources[2] = {nullptr};
 	hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
@@ -797,6 +795,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
 	hr = dxcUtils->CreateDefaultIncludeHandler(&includeHandler);
 	assert(SUCCEEDED(hr));
+	*/
 
 	// Mathインスタンスの初期化
 	// Math* math = new Math();
@@ -1273,12 +1272,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     };
 
 	// imguiの初期化
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(windowsAPI->GetHwnd());
-	ImGui_ImplDX12_Init(
-	    device.Get(), swapChainDesc.BufferCount, rtvDesc.Format, srvDescriptorHeap.Get(), srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	//IMGUI_CHECKVERSION();
+	//ImGui::CreateContext();
+	//ImGui::StyleColorsDark();
+	//ImGui_ImplWin32_Init(windowsAPI->GetHwnd());
+	//ImGui_ImplDX12_Init(
+	//    device.Get(), swapChainDesc.BufferCount, rtvDesc.Format, srvDescriptorHeap.Get(), srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 		// 2枚目のTexture
 	DirectX::ScratchImage mipImages2 = LoadTexture(modelData.material.textureFilePath);
