@@ -575,9 +575,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// DirectX基礎の初期化
 	DirectXBasics* directXBasics = nullptr;
 	directXBasics = new DirectXBasics();
-	directXBasics->Initialize();
+	directXBasics->Initialize(windowsAPI);
 
-
+	// Inputの初期化
+	Input* input = nullptr;
+	input = new Input();
+	input->Initialize(windowsAPI);
 
 
 	// 誰も補足しなかった場合に補足するための関数
@@ -1442,7 +1445,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//		// =====================
 	//		// 描画
 	//		// =====================
-	//		
+			directXBasics->PreDraw();
+	
+			directXBasics->PostDraw();
+
 	//
 	//		// =====================================================
 	//		// 球

@@ -22,9 +22,6 @@ LRESULT CALLBACK WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPAR
 
 // 初期化
 void WindowsAPI::Initialize() {
-	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
-
-
 
 	wc.lpfnWndProc = WindowProc;
 

@@ -12,7 +12,7 @@
 class DirectXBasics {
 public:
 	// 初期化
-	void Initialize();
+	void Initialize(WindowsAPI* windowsAPI);
 
 	// デバイスの初期化
 	void InitializeDevice();
@@ -79,60 +79,70 @@ public:
 	// ImGuiの初期化
 	void InitializeImGui();
 
-private:
-	// 初期化
-	void Initialize(WindowsAPI* windowsAPI);
+	// 描画前処理
+	void PreDraw();
 
+	// 描画後処理
+	void PostDraw();
+
+private:
 
 	// DirectX12のデバイス
-	Microsoft::WRL::ComPtr<ID3D12Device> device;
+	Microsoft::WRL::ComPtr<ID3D12Device> device_;
 	// DXGIファクトリ
-	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory;
+	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory_;
 
 	// WindowsAPI
-	WindowsAPI* windowsAPI = nullptr;
+	WindowsAPI* directXWindowsAPI_ = nullptr;
 
 	// コマンドキュー
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue;
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue_;
 	// コマンドアロケータ
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator_;
 	// コマンドリスト
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList;
-	// スワップチェーン
-	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain;
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
+	// スワップチェーンのメンバ変数
+	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain_;
 	// 深度バッファのリソースを生成
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer;
+	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer_;
 
 
 	// レンダーターゲットビュー用ディスクリプタヒープ
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_;
 	// シェーダリソースビュー用ディスクリプタヒープ
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_;
 	// 深度ステンシルビュー用ディスクリプタヒープ
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_;
 
 	// SwapCainからResourceを引っ張ってくる
-	//Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources[2] = {nullptr};
+	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources_[2];
 	// RTVハンドル
 	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 	
 
 	// デスクリプタサイズ
-	uint32_t descriptorSizeSRV = 0;
-	uint32_t descriptorSizeRTV = 0;
-	uint32_t descriptorSizeDSV = 0;
+	uint32_t descriptorSizeSRV_ = 0;
+	uint32_t descriptorSizeRTV_ = 0;
+	uint32_t descriptorSizeDSV_ = 0;
 
 	// スワップチェーンリソース
-	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources;
+	//std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources;
 
 	// ビューポート矩形のメンバ変数
-	D3D12_VIEWPORT viewport{};
+	D3D12_VIEWPORT viewport_{};
 
 	// シザリング矩形のメンバ変数
-	D3D12_RECT scissorRect{};
+	D3D12_RECT scissorRect_{};
 
 	// DXCコンパイラの各生成物のメンバ変数
-	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils = nullptr;
-	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler = nullptr;
+	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_ = nullptr;
+	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
+	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
+
+	// フェンスのメンバ変数
+	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
+	uint64_t fenceValue_ = 0;
+	HANDLE fenceEvent_ = nullptr;
+
 	
 };

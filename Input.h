@@ -34,6 +34,6 @@ private:
 	BYTE preKey[256] = {};
 
 	// WindowsAPI
-	WindowsAPI* windowsAPI = nullptr;
+	WindowsAPI* inputWindowsAPI_ = nullptr;
 
 };

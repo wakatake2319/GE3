@@ -7,7 +7,7 @@
 void Input::Initialize(WindowsAPI* windowsAPI) {
 
 	// 借りてきたWindowsAPIのインスタンスを記録
-	this->windowsAPI = windowsAPI;
+	this->inputWindowsAPI_ = windowsAPI;
 
 	// 関数が成功したかどうかをSUCCEEDEマクロで判断できる
 	HRESULT hr;
