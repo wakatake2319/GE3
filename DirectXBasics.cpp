@@ -218,6 +218,14 @@ void DirectXBasics::InitializeSwapChain() {
 	// コマンドキュー、ウィンドウハンドル、設定して生成する
 	hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), directXWindowsAPI_->GetHwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 	assert(SUCCEEDED(hr));
+
+	// ==============================================================================
+	// バックバッファを取得
+	for (UINT i = 0; i < 2; ++i) {
+		hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&swapChainResources_[i]));
+		assert(SUCCEEDED(hr));
+	}
+	// ==============================================================================
 }
 
 
