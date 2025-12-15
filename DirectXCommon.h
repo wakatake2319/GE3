@@ -14,6 +14,7 @@
 #include "externals/imgui/imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
+#include <chrono>
 
 class DirectXCommon {
 public:
@@ -42,7 +43,7 @@ public:
 	void InitializeRenderTargetViews();
 
 	// CPUデスクリプタハンドル取得関数
-	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(const Microsoft::WRL::ComPtr< ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorSize, uint32_t index);
+	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorSize, uint32_t index);
 
 	// GPUデスクリプタハンドル取得
 	static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorSize, uint32_t index);
@@ -57,7 +58,7 @@ public:
 	// RTVに特化した公開用の関数
 	// RTVの指定番号のCPUデスクリプタハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUDescriptorHandle(uint32_t index);
-	
+
 	// RTVの指定番号のRTVデスクリプタハンドル取得
 	D3D12_GPU_DESCRIPTOR_HANDLE GetRTVGPUDescriptorHandle(uint32_t index);
 
@@ -95,7 +96,6 @@ public:
 	ID3D12Device* GetDevice() const { return device_.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
 
-
 	// シェーダーコンパイル
 	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
 
@@ -110,8 +110,8 @@ public:
 
 	// テクスチャファイルの読み込み
 	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
-private:
 
+private:
 	// DirectX12のデバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> device_;
 	// DXGIファクトリ
@@ -131,7 +131,6 @@ private:
 	// 深度バッファのリソースを生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer_;
 
-
 	// レンダーターゲットビュー用ディスクリプタヒープ
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_;
 	// シェーダリソースビュー用ディスクリプタヒープ
@@ -142,8 +141,7 @@ private:
 	// SwapCainからResourceを引っ張ってくる
 	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources_[2];
 	// RTVハンドル
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-	
+	// D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 
 	// デスクリプタサイズ
 	uint32_t descriptorSizeSRV_ = 0;
@@ -151,7 +149,7 @@ private:
 	uint32_t descriptorSizeDSV_ = 0;
 
 	// スワップチェーンリソース
-	//std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources;
+	// std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources;
 
 	// ビューポート矩形のメンバ変数
 	D3D12_VIEWPORT viewport_{};
@@ -160,8 +158,8 @@ private:
 	D3D12_RECT scissorRect_{};
 
 	// DXCコンパイラの各生成物のメンバ変数
-	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_ = nullptr; // DXCユーティリティ
-	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr; // DXCコンパイラ
+	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_ = nullptr;                // DXCユーティリティ
+	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;         // DXCコンパイラ
 	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr; // DXCインクルードハンドラ
 
 	// フェンスのメンバ変数
@@ -169,5 +167,11 @@ private:
 	uint64_t fenceValue_ = 0;
 	HANDLE fenceEvent_ = nullptr;
 
+	// FPS固定初期化
+	void InitializeFixedFPS();
+	// FPS固定更新
+	void UpdateFixedFPS();
 
+	// 記録時間
+	std::chrono::steady_clock::time_point reference_;
 };
