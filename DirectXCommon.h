@@ -1,15 +1,21 @@
 #pragma once
 #include <windows.h>
 #include <d3d12.h>
+#include <d3d12shader.h>
 #include <dxgi1_6.h>
 #include <wrl.h>
 #include "WindowsAPI.h"
 #include <array>
 #include <dxcapi.h>
+#include <string>
+#include "externals/DirectXTex/Directxtex.h"
+#include "externals/DirectXTex/d3dx12.h"
 
+#include "externals/imgui/imgui.h"
+#include "externals/imgui/imgui_impl_dx12.h"
+#include "externals/imgui/imgui_impl_win32.h"
 
-
-class DirectXBasics {
+class DirectXCommon {
 public:
 	// 初期化
 	void Initialize(WindowsAPI* windowsAPI);
@@ -85,6 +91,25 @@ public:
 	// 描画後処理
 	void PostDraw();
 
+	// getter
+	ID3D12Device* GetDevice() const { return device_.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
+
+
+	// シェーダーコンパイル
+	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
+
+	// バッファリソースの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+
+	// テクスチャリソースの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
+
+	// テクスチャデータの転送
+	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(const Microsoft::WRL::ComPtr<ID3D12Resource>& texture, const DirectX::ScratchImage& mipImages);
+
+	// テクスチャファイルの読み込み
+	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
 private:
 
 	// DirectX12のデバイス
@@ -135,14 +160,14 @@ private:
 	D3D12_RECT scissorRect_{};
 
 	// DXCコンパイラの各生成物のメンバ変数
-	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_ = nullptr;
-	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
-	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
+	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_ = nullptr; // DXCユーティリティ
+	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr; // DXCコンパイラ
+	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr; // DXCインクルードハンドラ
 
 	// フェンスのメンバ変数
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
 	uint64_t fenceValue_ = 0;
 	HANDLE fenceEvent_ = nullptr;
 
-	
+
 };
