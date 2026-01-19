@@ -8,12 +8,12 @@
 #include <array>
 #include <dxcapi.h>
 #include <string>
-#include "externals/DirectXTex/Directxtex.h"
-#include "externals/DirectXTex/d3dx12.h"
+#include "DirectXTex/Directxtex.h"
+#include "DirectXTex/d3dx12.h"
 
-#include "externals/imgui/imgui.h"
-#include "externals/imgui/imgui_impl_dx12.h"
-#include "externals/imgui/imgui_impl_win32.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx12.h"
+#include "imgui/imgui_impl_win32.h"
 #include <chrono>
 
 class DirectXCommon {

@@ -16,8 +16,8 @@
 // リソースリークチェック
 #include <dxgidebug.h>
 // DXC
-#include "Math.h"
-#include "MathTypes.h"
+#include "engine/base/Math.h"
+#include "engine/base/MathTypes.h"
 //#include "externals/DirectXTex/Directxtex.h"
 //#include "externals/DirectXTex/d3dx12.h"
 //#include <dxcapi.h>
@@ -27,9 +27,9 @@
 
 #define DIRECTINPUT_VERSION 0x0800 // DirectInputのバージョン指定
 #include <dinput.h>
-#include "Input.h"
-#include "WindowsAPI.h"
-#include "DirectXCommon.h"
+#include "engine/io/Input.h"
+#include "engine/base/WindowsAPI.h"
+#include "engine/base/DirectXCommon.h"
 #include <CommCtrl.h>
 
 // デバッグ用
