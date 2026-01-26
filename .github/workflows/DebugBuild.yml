@@ -7,7 +7,7 @@ on:
 
 env:
   SOLUTION_FILE_PATH: project/cg2_00_03.sln
-  CONFIGURATION: DebugBuild
+  CONFIGURATION: Debug
 
 jobs:
   build:
