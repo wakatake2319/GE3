@@ -14,7 +14,7 @@ env:
 jobs:
   check_files:
     name: 不要なファイルを検索
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: リポジトリをチェックアウト
