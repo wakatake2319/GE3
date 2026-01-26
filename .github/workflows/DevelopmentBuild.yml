@@ -1,4 +1,4 @@
-name: ReleaseBuild
+name: DevelopmentBuild
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 env:
   SOLUTION_FILE_PATH: project/cg2_00_03.sln
-  CONFIGURATION: Release
+  CONFIGURATION: Development
 
 jobs:
   build:
