@@ -1,4 +1,4 @@
-name: checkUnwantedFiles
+name: CheckUnwantedFiles
 
 on:
   workflow_dispatch:
