@@ -356,3 +356,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ==== Generated / local files ====
+imgui.ini
+dxcompiler.dll
+dxil.dll
+.Generated/
