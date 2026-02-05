@@ -24,6 +24,8 @@
 #include <vector>
 //#include <d3d12shader.h>
 //#include <wrl.h>
+#include "SpriteCommon.h"
+#include "Sprite.h"
 
 #define DIRECTINPUT_VERSION 0x0800 // DirectInputのバージョン指定
 #include <dinput.h>
@@ -579,6 +581,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	input = new Input();
 	input->Initialize(windowsAPI);
 
+	SpriteCommon* spriteCommon = nullptr;
+	// スプライト共通部の初期化
+	spriteCommon = new SpriteCommon;
+	spriteCommon->Initialize();
+
+	Sprite* sprite = new Sprite();
+	sprite->Initialize();
 
 	// 誰も補足しなかった場合に補足するための関数
 	SetUnhandledExceptionFilter(ExportDump);
@@ -1126,19 +1135,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 //
-	// スプライト
-	Microsoft::WRL::ComPtr <ID3D12Resource> indexResourceSprite = directXCommon->CreateBufferResource(sizeof(uint32_t) * indexCount);
-
-	D3D12_INDEX_BUFFER_VIEW indexBufferViewSprite{};
-	// リソースの先頭のアドレスから使う
-	indexBufferViewSprite.BufferLocation = indexResourceSprite->GetGPUVirtualAddress();
-	// 使用するリソースのサイズはインデックス6つ分のサイズ
-	indexBufferViewSprite.SizeInBytes = sizeof(uint32_t) * indexCount;
-	// インデックスはuint32_tとする
-	indexBufferViewSprite.Format = DXGI_FORMAT_R32_UINT;
-	// インデックスリソースにデータを書き込む
-	uint32_t* indexDataSprite = nullptr;
-	indexResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSprite));
+	//// スプライト
+	//Microsoft::WRL::ComPtr <ID3D12Resource> indexResourceSprite = directXCommon->CreateBufferResource(sizeof(uint32_t) * indexCount);
+	//
+	//D3D12_INDEX_BUFFER_VIEW indexBufferViewSprite{};
+	//// リソースの先頭のアドレスから使う
+	//indexBufferViewSprite.BufferLocation = indexResourceSprite->GetGPUVirtualAddress();
+	//// 使用するリソースのサイズはインデックス6つ分のサイズ
+	//indexBufferViewSprite.SizeInBytes = sizeof(uint32_t) * indexCount;
+	//// インデックスはuint32_tとする
+	//indexBufferViewSprite.Format = DXGI_FORMAT_R32_UINT;
+	//// インデックスリソースにデータを書き込む
+	//uint32_t* indexDataSprite = nullptr;
+	//indexResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSprite));
 //
 
 
@@ -1562,8 +1571,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 解放処理
 	delete input;
 	delete windowsAPI;
-	delete directXCommon;
-
+	delete directXCommon;	
+	delete spriteCommon;
+	delete sprite;
 	
 
 	return 0;
