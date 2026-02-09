@@ -587,7 +587,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	spriteCommon->Initialize(directXCommon);
 
 	Sprite* sprite = new Sprite();
-	sprite->Initialize();
+	sprite->Initialize(spriteCommon);
+	sprite->Update();
 
 	// 誰も補足しなかった場合に補足するための関数
 	SetUnhandledExceptionFilter(ExportDump);
@@ -1020,13 +1021,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 頂点リソースを作る
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = directXCommon->CreateBufferResource(sizeof(VertexData) * modelData.vertices.size());
 	// 頂点バッファビューを作成する
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 	// リソースの先頭のアドレスから使う
-	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
+	vertexBufferView_.BufferLocation = vertexResource->GetGPUVirtualAddress();
 	// 使用するリソースのサイズは頂点のサイズ
-	vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size());
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size());
 	// 1頂点当たりのサイズ
-	vertexBufferView.StrideInBytes = sizeof(VertexData);
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 //
 //
 	// 頂点リソースにデータを書き込む
@@ -1205,12 +1206,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         {0.0f, 0.0f, -5.0f}
     };
 
-	// SpriteのTransform
-	Transform transformSprite{
-	    {1.0f, 1.0f, 1.0f},
-        {0.0f, 0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f}
-    };
+	//// SpriteのTransform
+	//Transform transformSprite{
+	//    {1.0f, 1.0f, 1.0f},
+    //    {0.0f, 0.0f, 0.0f},
+    //    {0.0f, 0.0f, 0.0f}
+    //};
 
 	Transform uvTransformSprite{
 	    {1.0f, 1.0f, 1.0f},
@@ -1303,13 +1304,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	materialDataSphere->uvTransform = MakeIdentity4x4();
 //
 //
-	// スプライト用マテリアル（ライティング無効）
-	Microsoft::WRL::ComPtr <ID3D12Resource> materialResourceSprite = directXCommon->CreateBufferResource(sizeof(Material));
-	Material* materialDataSprite = nullptr;
-	materialResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite));
-	materialDataSprite->enableLighting = false;
-	materialDataSprite->color = {1.0f, 1.0f, 1.0f, 1.0f}; 
-	materialDataSprite->uvTransform = MakeIdentity4x4();
+	//// スプライト用マテリアル（ライティング無効）
+	//Microsoft::WRL::ComPtr <ID3D12Resource> materialResourceSprite = directXCommon->CreateBufferResource(sizeof(Material));
+	//Material* materialDataSprite = nullptr;
+	//materialResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&materialDataSprite));
+	//materialDataSprite->enableLighting = false;
+	//materialDataSprite->color = {1.0f, 1.0f, 1.0f, 1.0f}; 
+	//materialDataSprite->uvTransform = MakeIdentity4x4();
 //
 	// liting用のマテリアルを作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLight = directXCommon->CreateBufferResource(sizeof(DirectionalLight));
@@ -1337,10 +1338,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		input->Update();
 		directXCommon->PreDraw();
+	
 
 		// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
 		spriteCommon->SetCommonPipelineState();
-
+		sprite->Draw();
 
 	//
 	//
@@ -1364,18 +1366,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			wvpData->WVP = worldViewProjectionMatrix;
 	
 			// Sprite用のWorldViewProjectionMatrixを作る
-			Matrix4x4 worldMatrixSprite = MakeAffineMatrix(transformSprite.scale, transformSprite.rotate, transformSprite.translate);
-			Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
-			Matrix4x4 projectiomMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsAPI::kClientWidth), float(WindowsAPI::kClientHeight), 0.0f, 100.0f);
-			Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectiomMatrixSprite));
-			transformationMatrixDataSprite->World = worldMatrixSprite;
-			transformationMatrixDataSprite->WVP = worldViewProjectionMatrixSprite;
+			//Matrix4x4 worldMatrixSprite = MakeAffineMatrix(transformSprite.scale, transformSprite.rotate, transformSprite.translate);
+			//Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
+			//Matrix4x4 projectiomMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsAPI::kClientWidth), float(WindowsAPI::kClientHeight), 0.0f, 100.0f);
+			//Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectiomMatrixSprite));
+			//transformationMatrixDataSprite->World = worldMatrixSprite;
+			//transformationMatrixDataSprite->WVP = worldViewProjectionMatrixSprite;
 	
 	
 			Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransformSprite.scale);
 			uvTransformMatrix = Multiply(uvTransformMatrix, MakeRotateZMatrix(uvTransformSprite.rotate.z));
 			uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransformSprite.translate));
-			materialDataSprite->uvTransform = uvTransformMatrix;
+			//materialDataSprite->uvTransform = uvTransformMatrix;
 	//
 	//
 			ImGui::Begin("camera");
@@ -1394,14 +1396,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::End();
 	
 			
-			ImGui::Begin("sprite");
-			ImGui::DragFloat3("rotate.", &transformSprite.rotate.x, 0.01f, -10.0f, 10.0f);
-			ImGui::DragFloat3("translate.", &transformSprite.translate.x, 0.1f);
-			ImGui::DragFloat3("scale.", &transformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-			ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x,0.01f,-10.0f,10.0f);
-			ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-			ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-			ImGui::End();
+			//ImGui::Begin("sprite");
+			//ImGui::DragFloat3("rotate.", &transformSprite.rotate.x, 0.01f, -10.0f, 10.0f);
+			//ImGui::DragFloat3("translate.", &transformSprite.translate.x, 0.1f);
+			//ImGui::DragFloat3("scale.", &transformSprite.scale.x, 0.01f, -10.0f, 10.0f);
+			//ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x,0.01f,-10.0f,10.0f);
+			//ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
+			//ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
+			//ImGui::End();
 	
 	
 	
@@ -1495,7 +1497,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		    //directXCommon->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 			// ======================================================================
 	
-			//====================================================
+			////====================================================
 			//// スプライト
 		    //directXCommon->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
 			//// IBVを設定
@@ -1508,8 +1510,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//
 			//// 6個のインデックスを使用し、1つのインスタンスを描画。そのほかは当面0でいい
 		    //directXCommon->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
-	//
-	//		//======================================================================
+	//		//
+	//		////======================================================================
 	
 
 

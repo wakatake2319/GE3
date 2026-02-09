@@ -22,20 +22,25 @@ public:
 		float paddding[3];
 		Matrix4x4 uvTransform;
 	};
+
 	// 座標変換行列データ
 	struct TransformationMatrix {
 		Matrix4x4 WVP;
-		Matrix4x4 world;
+		Matrix4x4 World;
 	};
 
 	static const uint32_t kVertexCount = 4;
 	static const uint32_t kIndexCount = 6;
+	static const uint32_t kSubdivision = 32;
 
 	// 初期化
 	void Initialize(SpriteCommon* spriteCommon);
 
-	// spriteのゲッター
-	//SpriteCommon* GetSpriteCommon() const { return spriteCommon_; }
+	// 更新処理
+	void Update();
+
+	// 描画処理
+	void Draw();
 
 
 private:
@@ -59,20 +64,32 @@ private:
 	// マテリアルリソースにデータを書き込む
 	void MapMaterialResource();
 
+	// 座標変換行列リソースを作る
+	void CreateTransformationMatrixResource();
+	// 座標変換行列リソースにデータを書き込む
+	void MapTransformationMatrixResource();
+
 
 	SpriteCommon* spriteCommon_ = nullptr;
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
-	// マテリアルソース
+	// マテリアルリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+	// 座標変換行列リソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource_;
+
 
 	// バッファリソース内のデータを刺すポイント
 	VertexData* vertexData = nullptr;
 	uint32_t* indexData = nullptr;
 	Material* materialData = nullptr;
+	TransformationMatrix* transformationMatrixData = nullptr;
 	// バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW indexBufferView;
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_{};
 };
