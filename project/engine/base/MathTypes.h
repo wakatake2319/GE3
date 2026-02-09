@@ -7,6 +7,10 @@ struct Vector3 {
 	float x, y, z;
 };
 
+struct Vector4 {
+	float x, y, z, w;
+};
+
 struct Transform {
 	Vector3 scale;
 	Vector3 rotate;

@@ -1,17 +1,26 @@
-#pragma once
-class SpriteCommon {
-public:
-	// 初期化
-	void Initialize(DirectXCommon* dXCommon);
+#pragma once  
+#include <wrl.h>  
+#include <d3d12.h>  
+#include "engine/base/DirectXCommon.h"
 
-	DirectXCommon* GetDXCommon() const { return dXCommon_; }
+class SpriteCommon {  
+public:  
+   // 初期化  
+   void Initialize(DirectXCommon* dXCommon);  
 
-private:
-	// ルートシグネイチャの作成
-	void InitializeRootSignature();
-	// グラフィックパイプラインの生成
-	void InitializeGraphicsPipeline();
+   // 共通描画設定  
+   void SetCommonPipelineState();  
 
-	DirectXCommon* dXCommon_;
+   // DirectXCommonのゲッター  
+   DirectXCommon* GetDXCommon() const { return dXCommon_; }  
 
+private:  
+   // ルートシグネイチャの作成  
+   void InitializeRootSignature();  
+   // グラフィックパイプラインの生成  
+   void InitializeGraphicsPipeline();  
+
+   DirectXCommon* dXCommon_;  
+   Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_; // rootSignature_ を追加  
+   Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_; // pipelineState_ を追加  
 };
