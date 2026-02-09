@@ -42,6 +42,12 @@ public:
 	// 描画処理
 	void Draw();
 
+	// getter
+	const Vector2& GetPosition() const { return position_; }
+
+	// setter
+	void SetPosition(const Vector2& position) { position_ = position; }
+
 
 private:
 	// VertexResourceを作る
@@ -69,7 +75,6 @@ private:
 	// 座標変換行列リソースにデータを書き込む
 	void MapTransformationMatrixResource();
 
-
 	SpriteCommon* spriteCommon_ = nullptr;
 
 	// バッファリソース
@@ -92,4 +97,6 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_{};
+
+	Vector2 position_ = {0.0f, 0.0f};
 };

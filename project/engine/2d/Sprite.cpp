@@ -1,5 +1,5 @@
 #include "Sprite.h"
-#include "SpriteCommon.h"
+#include "base/SpriteCommon.h"
 #include <base/Logger.h>
 using namespace Logger;
 
@@ -39,11 +39,6 @@ void Sprite::Initialize(SpriteCommon* spriteCommon) {
 	// 単位行列を書き込んでおく
 	transformationMatrixData->WVP = MakeIdentity4x4();
 	transformationMatrixData->World = MakeIdentity4x4();
-
-
-
-	//auto* dxCommon = spriteCommon_->GetDXCommon();
-
 
     // ==============================
 	// ① テクスチャ読み込み（CPU）
@@ -199,6 +194,10 @@ void Sprite::Update() {
         {0.0f, 0.0f, 0.0f}
     };
 
+	// 座標-反映処理-
+	transform.translate = {position_.x, position_.y, 0.0f};
+
+
 	// TransformからWorldMatrixを作る
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	
@@ -208,9 +207,10 @@ void Sprite::Update() {
 	// ProjectionMatrixを作って平行投影行列を書き込む
 	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsAPI::kClientWidth), float(WindowsAPI::kClientHeight), 0.0f, 100.0f);
 
-
 	transformationMatrixData->WVP = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 	transformationMatrixData->World = worldMatrix;
+
+
 }
 
 // 描画処理
