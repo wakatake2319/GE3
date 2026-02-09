@@ -164,8 +164,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\Math.cpp" />
     <ClCompile Include="engine\base\stringUtility.cpp" />
     <ClCompile Include="engine\base\WindowsAPI.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="SpriteCommon.cpp" />
+    <ClCompile Include="engine\base\Sprite.cpp" />
+    <ClCompile Include="engine\base\SpriteCommon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl">
@@ -201,8 +201,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\MathTypes.h" />
     <ClInclude Include="engine\base\stringUtility.h" />
     <ClInclude Include="engine\base\WindowsAPI.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SpriteCommon.h" />
+    <ClInclude Include="engine\base\Sprite.h" />
+    <ClInclude Include="engine\base\SpriteCommon.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="extarnals\imgui\LICENSE.txt" />

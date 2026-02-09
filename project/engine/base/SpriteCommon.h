@@ -1,7 +1,7 @@
 #pragma once  
 #include <wrl.h>  
 #include <d3d12.h>  
-#include "engine/base/DirectXCommon.h"
+#include "base/DirectXCommon.h"
 
 class SpriteCommon {  
 public:  

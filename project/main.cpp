@@ -24,8 +24,8 @@
 #include <vector>
 //#include <d3d12shader.h>
 //#include <wrl.h>
-#include "SpriteCommon.h"
-#include "Sprite.h"
+#include "base/SpriteCommon.h"
+#include "base/Sprite.h"
 
 #define DIRECTINPUT_VERSION 0x0800 // DirectInputのバージョン指定
 #include <dinput.h>
@@ -1114,7 +1114,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	indexBufferViewSphere.Format = DXGI_FORMAT_R32_UINT;
 	uint32_t* indexDataSphere = nullptr;
 	indexResourceSphere->Map(0, nullptr, reinterpret_cast<void**>(&indexDataSphere));
-//
+
 	// インデックスの生成（UVスフィア方式）
 	// 注意：頂点の生成コードと同じ subdivision ロジックと対応させる
 	uint32_t index = 0;
