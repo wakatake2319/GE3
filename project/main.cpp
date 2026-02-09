@@ -1343,6 +1343,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		input->Update();
 		spriteTransform->Move();
+		spriteTransform->Rotate();
 		sprite->Update();
 		directXCommon->PreDraw();
 	

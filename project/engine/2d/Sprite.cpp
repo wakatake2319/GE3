@@ -196,7 +196,8 @@ void Sprite::Update() {
 
 	// 座標-反映処理-
 	transform.translate = {position_.x, position_.y, 0.0f};
-
+	// 回転-反映処理-
+	transform.rotate = {0.0f, 0.0f, rotation_};
 
 	// TransformからWorldMatrixを作る
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);

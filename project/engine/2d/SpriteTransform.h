@@ -8,6 +8,9 @@ public:
 
 	void Move();
 
+	// 回転
+	void Rotate();
+
 private:
 	Sprite* sprite_ = nullptr;
 };

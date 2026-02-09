@@ -44,9 +44,13 @@ public:
 
 	// getter
 	const Vector2& GetPosition() const { return position_; }
-
 	// setter
-	void SetPosition(const Vector2& position) { position_ = position; }
+	void SetPosition(const Vector2& position) { this->position_ = position; }
+
+	// 回転のgetter
+	float GetRotation() const { return rotation_; }
+	// 回転のsetter
+	void SetRotation(float rotation) { this->rotation_ = rotation; }
 
 
 private:
@@ -98,5 +102,8 @@ private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_{};
 
+	// 移動
 	Vector2 position_ = {0.0f, 0.0f};
+	// 回転
+	float rotation_ = 0.0f;
 };
