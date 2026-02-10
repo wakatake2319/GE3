@@ -587,9 +587,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	spriteCommon = new SpriteCommon;
 	spriteCommon->Initialize(directXCommon);
 
+	// ==================================
 	Sprite* sprite = new Sprite();
-	sprite->Initialize(spriteCommon);
+	//sprite->Initialize(spriteCommon);
+	// スプライトの複数化
+	std::vector<Sprite*> sprites_;
+	for (uint32_t i = 0; i < 10; ++i) {
+		//Sprite* sprite = new Sprite();
+		sprite->Initialize(spriteCommon);
 
+		 // 座標をそれぞれ変える
+		sprite->SetPosition({50.0f + i * 100.0f, 200.0f});
+
+		sprites_.push_back(sprite);
+	}
+
+	// ===================================================-
 	SpriteTransform* spriteTransform = new SpriteTransform();
 	spriteTransform->Initialize(sprite);
 	
@@ -1335,6 +1348,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// スプライトの拡大縮小の切り替え
 	bool ScaleSwitch = false;
 
+
+
 	// ==============================
 	// ゲームループ
 	// ==============================
@@ -1361,13 +1376,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (ScaleSwitch) {
 			spriteTransform->Scale();
 		}
-		sprite->Update();
+
+		// ====================================
+		//sprite->Update();
 		directXCommon->PreDraw();
-	
+		//for (Sprite* sprite : sprites) {
+		//	sprite->Update();
+		//}
 
 		// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
 		spriteCommon->SetCommonPipelineState();
-		sprite->Draw();
+		//for (Sprite* sprite : sprites) {
+		//	sprite->Draw();
+		//}
+		// スプライトの複数化
+		for (uint32_t i = 0; i < 10; ++i) {
+			// Sprite* sprite = new Sprite();
+			sprite->Draw();
+			sprite->Update();
+			//sprites.push_back(sprite);
+		}
+		// =============================================
 
 	//
 	//
@@ -1607,7 +1636,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	delete windowsAPI;
 	delete directXCommon;	
 	delete spriteCommon;
-	delete sprite;
+	// 複数化したSpriteの解放
+	for (Sprite* sprite : sprites_) {
+	    delete sprite;
+	}
 	
 
 	return 0;
