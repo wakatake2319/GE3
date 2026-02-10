@@ -587,24 +587,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	spriteCommon = new SpriteCommon;
 	spriteCommon->Initialize(directXCommon);
 
-	// ==================================
-	Sprite* sprite = new Sprite();
-	//sprite->Initialize(spriteCommon);
 	// スプライトの複数化
 	std::vector<Sprite*> sprites_;
-	for (uint32_t i = 0; i < 10; ++i) {
-		//Sprite* sprite = new Sprite();
+	std::vector<SpriteTransform*> spriteTransforms_;
+	for (uint32_t i = 0; i < 5; ++i) {
+		Sprite* sprite = new Sprite();
 		sprite->Initialize(spriteCommon);
-
 		 // 座標をそれぞれ変える
-		sprite->SetPosition({50.0f + i * 100.0f, 200.0f});
-
+		sprite->SetPosition({0.0f + i * 150.0f, 0.0f});
+		// スプライトのサイズを変える
+		sprite->SetSize({75.0f, 75.0f});
 		sprites_.push_back(sprite);
+
+		SpriteTransform* transform = new SpriteTransform();
+		transform->Initialize(sprite);
+		spriteTransforms_.push_back(transform);
 	}
 
-	// ===================================================-
-	SpriteTransform* spriteTransform = new SpriteTransform();
-	spriteTransform->Initialize(sprite);
 	
 
 
@@ -1364,39 +1363,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		input->Update();
-		if (MoveSwitch) {
-			spriteTransform->Move();
-		}
-		if (RotateSwitch) {
-			spriteTransform->Rotate();
-		}
-		if (ChangeColorSwitch) {
-			spriteTransform->ChangeColor();
-		}
-		if (ScaleSwitch) {
-			spriteTransform->Scale();
+		for (SpriteTransform* spriteTransform : spriteTransforms_) {
+
+			if (MoveSwitch) {
+				spriteTransform->Move();
+			}
+			if (RotateSwitch) {
+				spriteTransform->Rotate();
+			}
+			if (ChangeColorSwitch) {
+				spriteTransform->ChangeColor();
+			}
+			if (ScaleSwitch) {
+				spriteTransform->Scale();
+			}
 		}
 
-		// ====================================
-		//sprite->Update();
 		directXCommon->PreDraw();
-		//for (Sprite* sprite : sprites) {
-		//	sprite->Update();
-		//}
+		for (Sprite* sprite : sprites_) {
+			sprite->Update();
+		}
 
 		// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
 		spriteCommon->SetCommonPipelineState();
-		//for (Sprite* sprite : sprites) {
-		//	sprite->Draw();
-		//}
-		// スプライトの複数化
-		for (uint32_t i = 0; i < 10; ++i) {
-			// Sprite* sprite = new Sprite();
+		for (Sprite* sprite : sprites_) {
 			sprite->Draw();
-			sprite->Update();
-			//sprites.push_back(sprite);
 		}
-		// =============================================
+
 
 	//
 	//
@@ -1640,7 +1633,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	for (Sprite* sprite : sprites_) {
 	    delete sprite;
 	}
-	
+	for (SpriteTransform* SpriteTransform : spriteTransforms_) {
+		delete SpriteTransform;
+	}
 
 	return 0;
 }
