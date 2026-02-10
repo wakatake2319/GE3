@@ -157,24 +157,25 @@ void Sprite::MapTransformationMatrixResource() {
 // 更新処理
 void Sprite::Update() {
 	// 頂点リソースにデータを書き込む(4点分)
+	// 拡縮-反映処理-
 	// 左下
-	vertexData[0].position = {0.0f, 360.f, 0.0f, 1.0f};
+	vertexData[0].position = {0.0f, 1.0f, 0.0f, 1.0f};
 	vertexData[0].texcoord = {0.0f, 1.0f};
-	vertexData[0].normal = {0.0f, 0.0f, 1.0f};
+	vertexData[0].normal = {0.0f, 0.0f, -1.0f};
 	// 左上
 	vertexData[1].position = {0.0f, 0.0f, 0.0f, 1.0f};
 	vertexData[1].texcoord = {0.0f, 0.0f};
-	vertexData[1].normal = {0.0f, 0.0f, 1.0f};
+	vertexData[1].normal = {0.0f, 0.0f, -1.0f};
 
 	// 右下
-	vertexData[2].position = {640.0f, 360.0f, 0.0f, 1.0f};
+	vertexData[2].position = {1.0f, 1.0f, 0.0f, 1.0f};
 	vertexData[2].texcoord = {1.0f, 1.0f};
-	vertexData[2].normal = {0.0f, 0.0f, 1.0f};
+	vertexData[2].normal = {0.0f, 0.0f, -1.0f};
 
 	// 右上
-	vertexData[3].position = {640.0f, 0.0f, 0.0f, 1.0f};
+	vertexData[3].position = {1.0f, 0.0f, 0.0f, 1.0f};
 	vertexData[3].texcoord = {1.0f, 0.0f};
-	vertexData[3].normal = {0.0f, 0.0f, 1.0f};
+	vertexData[3].normal = {0.0f, 0.0f, -1.0f};
 
 	// インデックスリソースにデータを書き込む(6点分)
 	for (uint32_t lat = 0; lat < kSubdivision; ++lat) {
@@ -198,6 +199,8 @@ void Sprite::Update() {
 	transform.translate = {position_.x, position_.y, 0.0f};
 	// 回転-反映処理-
 	transform.rotate = {0.0f, 0.0f, rotation_};
+	// 拡縮-反映処理-
+	transform.scale = {size_.x, size_.y, 1.0f};
 
 	// TransformからWorldMatrixを作る
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);

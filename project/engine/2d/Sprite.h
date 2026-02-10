@@ -42,9 +42,9 @@ public:
 	// 描画処理
 	void Draw();
 
-	// getter
+	// 座標のgetter
 	const Vector2& GetPosition() const { return position_; }
-	// setter
+	// 座標のsetter
 	void SetPosition(const Vector2& position) { this->position_ = position; }
 
 	// 回転のgetter
@@ -52,6 +52,15 @@ public:
 	// 回転のsetter
 	void SetRotation(float rotation) { this->rotation_ = rotation; }
 
+	// 色のgetter
+	const Vector4& GetColor() const { return materialData->color; }
+	// 色のsetter
+	void SetColor(const Vector4& color) { materialData->color = color; }
+
+	// 拡縮のgetter
+	const Vector2& GetSize() const { return size_; }
+	// 拡縮のsetter
+	void SetSize(const Vector2& size) { this->size_ = size; }
 
 private:
 	// VertexResourceを作る
@@ -106,4 +115,7 @@ private:
 	Vector2 position_ = {0.0f, 0.0f};
 	// 回転
 	float rotation_ = 0.0f;
+	// 拡縮
+	Vector2 size_ = {640.0f, 360.0f};
+
 };

@@ -1324,10 +1324,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	directionalLightData->color = {1.0f, 1.0f, 1.0f, 1.0f};
 	directionalLightData->direction = {0.0f, -1.0f, 0.0f};
 	directionalLightData->intensity = 1.0f;
-//
-//
-//
-//
+
+
+	// スプライトの移動の切り替え
+	bool MoveSwitch = false;
+	// スプライトの回転の切り替え
+	bool RotateSwitch = false;
+	// スプライトの色変化の切り替え
+	bool ChangeColorSwitch = false;
+	// スプライトの拡大縮小の切り替え
+	bool ScaleSwitch = false;
+
 	// ==============================
 	// ゲームループ
 	// ==============================
@@ -1342,8 +1349,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		input->Update();
-		spriteTransform->Move();
-		spriteTransform->Rotate();
+		if (MoveSwitch) {
+			spriteTransform->Move();
+		}
+		if (RotateSwitch) {
+			spriteTransform->Rotate();
+		}
+		if (ChangeColorSwitch) {
+			spriteTransform->ChangeColor();
+		}
+		if (ScaleSwitch) {
+			spriteTransform->Scale();
+		}
 		sprite->Update();
 		directXCommon->PreDraw();
 	
@@ -1404,14 +1421,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::End();
 	
 			
-			//ImGui::Begin("sprite");
+			ImGui::Begin("sprite");
 			//ImGui::DragFloat3("rotate.", &transformSprite.rotate.x, 0.01f, -10.0f, 10.0f);
 			//ImGui::DragFloat3("translate.", &transformSprite.translate.x, 0.1f);
 			//ImGui::DragFloat3("scale.", &transformSprite.scale.x, 0.01f, -10.0f, 10.0f);
 			//ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x,0.01f,-10.0f,10.0f);
 			//ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
 			//ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-			//ImGui::End();
+		    ImGui::Checkbox("MoveSwitch", &MoveSwitch);
+		    ImGui::Checkbox("RotateSwitch", &RotateSwitch);
+		    ImGui::Checkbox("ChangeColorSwitch", &ChangeColorSwitch);
+		    ImGui::Checkbox("ScaleSwitch", &ScaleSwitch);
+			ImGui::End();
 	
 	
 	
