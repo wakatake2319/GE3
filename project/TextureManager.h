@@ -3,6 +3,7 @@
 #include <DirectXTex/DirectXTex.h>
 #include <wrl.h>
 #include <d3d12.h>
+
 class TextureManager {
 private:
 	static TextureManager* instance;
@@ -29,11 +30,16 @@ private:
 	std::vector<TextureData> textureDatas;
 
 public:
+
+	// 初期化
+	void Initialize();
+
 	// シングルトンインスタンスの取得
 	static TextureManager* GetInstance();
 
+	void LoadTexture(const std::string& filePath);
+
 	// 終了
 	void Finalize();
-
 
 };

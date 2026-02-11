@@ -1,6 +1,13 @@
 #include "TextureManager.h"
+#include "base/DirectXCommon.h"
+
 
 TextureManager* TextureManager::instance = nullptr;
+
+void TextureManager::Initialize() {
+	// SRVの数と同数
+	textureDatas.resize(DirectXCommon::kMaxSRVCount);
+}
 
 TextureManager* TextureManager::GetInstance() {
 	if (instance == nullptr) {
@@ -15,3 +22,4 @@ void TextureManager::Finalize() {
 		instance = nullptr;
 	//}
 }
+

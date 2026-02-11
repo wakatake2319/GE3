@@ -34,6 +34,7 @@
 #include "engine/base/WindowsAPI.h"
 #include "engine/base/DirectXCommon.h"
 #include <CommCtrl.h>
+#include "TextureManager.h"
 
 // デバッグ用
 #pragma comment(lib, "Dbghelp.lib")
@@ -576,6 +577,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DirectXCommon* directXCommon = nullptr;
 	directXCommon = new DirectXCommon();
 	directXCommon->Initialize(windowsAPI);
+
+	TextureManager::GetInstance()->Initialize();
 
 	// Inputの初期化
 	Input* input = nullptr;
@@ -1622,6 +1625,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//
 	//CloseHandle(fenceEvent);
 	// windowsAPIの終了処理
+	TextureManager::GetInstance()->Finalize();
 	windowsAPI->Finalize();
 
 	// 解放処理
