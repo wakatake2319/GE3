@@ -19,15 +19,13 @@ TextureManager* TextureManager::GetInstance() {
 }
 
 void TextureManager::Finalize() {
-	//if (instance != nullptr) {
 		delete instance;
 		instance = nullptr;
-	//}
 }
 
 // テクスチャの読み込み
 void TextureManager::LoadTexture(const std::string& filePath) {
-	// Todo①: 読み込みのテクスチャを検索
+	// 読み込みのテクスチャを検索
 	auto it = std::find_if(
 		textureDatas.begin(),
 		textureDatas.end(), 
@@ -77,4 +75,7 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 
 	// テクスチャリソースにデータを転送
 	dXCommon_->UploadTextureData(textureData.resource, mipImages);
+
+	// 転送用に生成した中間リソースをテクスチャデータ構造体に格納
+	textureData.intermediateResource = dXCommon_->UploadTextureData(textureData.resource, mipImages);
 }

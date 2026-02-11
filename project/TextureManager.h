@@ -25,6 +25,8 @@ private:
 		DirectX::TexMetadata metadata;
 		// テクスチャリソース
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
+		// 中間用リソース
+		Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource;
 		// SRV作成時に必要なCPUハンドル
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
 		// 描画コマンドに必要なGPUハンドル
