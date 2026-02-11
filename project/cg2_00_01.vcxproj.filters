@@ -119,6 +119,9 @@
     <ClCompile Include="engine\2d\SpriteTransform.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -173,6 +176,9 @@
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="engine\2d\SpriteTransform.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
