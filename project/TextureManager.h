@@ -4,6 +4,9 @@
 #include <wrl.h>
 #include <d3d12.h>
 
+// 前方クラス
+class DirectXCommon;
+
 class TextureManager {
 private:
 	static TextureManager* instance;
@@ -13,13 +16,15 @@ private:
 	TextureManager(TextureManager&) = delete;
 	TextureManager& operator=(TextureManager&) = delete;
 
+	DirectXCommon* dXCommon_ = nullptr;
+
 	struct TextureData {
 		// 画像ファイルのパス
 		std::string filePath;
 		// 画像の幅や高さなどの情報
 		DirectX::TexMetadata metadata;
 		// テクスチャリソース
-		Microsoft::WRL::ComPtr<ID3D12Resource> textureResource;
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
 		// SRV作成時に必要なCPUハンドル
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
 		// 描画コマンドに必要なGPUハンドル
@@ -32,7 +37,7 @@ private:
 public:
 
 	// 初期化
-	void Initialize();
+	void Initialize(DirectXCommon* dxCommon);
 
 	// シングルトンインスタンスの取得
 	static TextureManager* GetInstance();
