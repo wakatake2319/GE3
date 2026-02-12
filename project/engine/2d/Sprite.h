@@ -34,7 +34,7 @@ public:
 	static const uint32_t kSubdivision = 32;
 
 	// 初期化
-	void Initialize(SpriteCommon* spriteCommon);
+	void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
 
 	// 更新処理
 	void Update();
@@ -61,6 +61,9 @@ public:
 	const Vector2& GetSize() const { return size_; }
 	// 拡縮のsetter
 	void SetSize(const Vector2& size) { this->size_ = size; }
+
+	// テクスチャ変更
+	//void cahngeTexture(std::string textureFilePath);
 
 private:
 	// VertexResourceを作る
@@ -118,4 +121,6 @@ private:
 	// 拡縮
 	Vector2 size_ = {640.0f, 360.0f};
 
+	// テクスチャ番号
+	uint32_t textureIndex_ = 0;
 };

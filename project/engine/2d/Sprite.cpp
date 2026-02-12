@@ -1,9 +1,10 @@
 #include "Sprite.h"
 #include "base/SpriteCommon.h"
 #include <base/Logger.h>
+#include "../../TextureManager.h"
 using namespace Logger;
 
-void Sprite::Initialize(SpriteCommon* spriteCommon) {
+void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath) {
 	this->spriteCommon_ = spriteCommon;
 
 	// VertexResourceを作る
@@ -40,50 +41,28 @@ void Sprite::Initialize(SpriteCommon* spriteCommon) {
 	transformationMatrixData->WVP = MakeIdentity4x4();
 	transformationMatrixData->World = MakeIdentity4x4();
 
-    // ==============================
-	// ① テクスチャ読み込み（CPU）
-	// ==============================
-	DirectX::ScratchImage mipImages = spriteCommon_->GetDXCommon()->LoadTexture("resources/uvChecker.png");
-
-	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-
-	// ==============================
-	// ② GPU用 TextureResource 作成
-	// ==============================
-	textureResource_ = spriteCommon_->GetDXCommon()->CreateTextureResource(metadata);
-
-	// ==============================
-	// ③ GPUへアップロード
-	// ==============================
-	spriteCommon_->GetDXCommon()->UploadTextureData(textureResource_, mipImages);
-
-	// ==============================
-	// ④ SRV 設定
-	// ==============================
+	textureIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+	// SRV設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = metadata.format;
+	//srvDesc.Format = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
+	//srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
 
-	// ★ Sprite専用のSRV index を1つ決める
+	// Sprite専用のSRV index を1つ決める
 	uint32_t textureIndex = 1;
 
 	// CPUハンドル（index分ずらす）
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = spriteCommon_->GetDXCommon()->GetSRVCPUDescriptorHandle(textureIndex);
 
-	ID3D12Device* device = spriteCommon_->GetDXCommon()->GetDevice();
-
-
-	device->CreateShaderResourceView(textureResource_.Get(), &srvDesc, cpuHandle);
-
-	// ==============================
 	// ⑤ GPUハンドルを保存（最重要）
-	// ==============================
 	textureSrvHandleGPU_ = spriteCommon_->GetDXCommon()->GetSRVGPUDescriptorHandle(textureIndex);
 
 	// デバッグ保険
 	//assert(textureSrvHandleGPU_.ptr != 0);
+
+	// 単位行列を書き込んでおく
+	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 }
 
 // VertexResourceを作る
@@ -232,8 +211,10 @@ void Sprite::Draw() {
 	spriteCommon_->GetDXCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 
 	// SRVのDescriptorTableの先頭を設定
-	spriteCommon_->GetDXCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU_);
+	spriteCommon_->GetDXCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex_));
 
 	// 描画(DrawCall)
 	spriteCommon_->GetDXCommon()->GetCommandList()->DrawIndexedInstanced(kIndexCount, 1, 0, 0, 0);
 }
+
+//void Sprite::cahngeTexture(std::string textureFilePath) { textureIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath); }

@@ -11,7 +11,7 @@ void TextureManager::Initialize(DirectXCommon* dxCommon) {
 	dXCommon_ = dxCommon;
 
 	// SRVの数と同数
-	textureDatas.resize(DirectXCommon::kMaxSRVCount);
+	textureDatas.reserve(DirectXCommon::kMaxSRVCount);
 }
 
 TextureManager* TextureManager::GetInstance() {
@@ -74,9 +74,11 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 
 	// SRVの設定を行う
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = textureData.metadata.format; // ★これが必要
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = textureData.metadata.format;
-	// 設定をもとにSRVの生成
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = UINT(textureData.metadata.mipLevels);
+	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f; // 設定をもとにSRVの生成
 	dXCommon_->GetDevice()->CreateShaderResourceView(textureData.resource.Get(), &srvDesc, textureData.srvHandleCPU);
 
 	// 転送用に生成した中間リソースをテクスチャデータ構造体に格納
@@ -101,4 +103,30 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	// ここまで来たら転送は終わっているので、intermediateResourceを解放しても良い
 	textureData.intermediateResource.Reset();
 	
+}
+
+// SRVインデックスの開始番号
+uint32_t TextureManager::GetTextureIndexByFilePath(const std::string& filePath) {
+	// 読み込みのテクスチャを検索
+	auto it = std::find_if(
+		textureDatas.begin(), 
+		textureDatas.end(), 
+		[&](const TextureData& textureData) { return textureData.filePath == filePath; });
+	if (it != textureDatas.end()) {
+		// 読み込み済みなら要素番号を返す
+		uint32_t textureIndex = static_cast<uint32_t>(std::distance(textureDatas.begin(), it));
+		return textureIndex;
+	}
+
+	assert(0);
+	return 0;
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(uint32_t textureIndex) {
+	// 範囲外指定速度をチェック
+	assert(textureIndex < textureDatas.size());
+
+	TextureData& textureData = textureDatas[textureIndex];
+	return textureData.srvHandleGPU;
+
 }

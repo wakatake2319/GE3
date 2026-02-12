@@ -580,6 +580,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	TextureManager::GetInstance()->Initialize(directXCommon);
 
+	// テクスチャ呼び出し
+	TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
+
+
 	// Inputの初期化
 	Input* input = nullptr;
 	input = new Input();
@@ -593,9 +598,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// スプライトの複数化
 	std::vector<Sprite*> sprites_;
 	std::vector<SpriteTransform*> spriteTransforms_;
+	std::vector<std::string> texturePaths = {"Resources/monsterBall.png", "Resources/uvChecker.png"};
 	for (uint32_t i = 0; i < 5; ++i) {
 		Sprite* sprite = new Sprite();
-		sprite->Initialize(spriteCommon);
+		sprite->Initialize(spriteCommon, texturePaths[i%2]);
+
 		 // 座標をそれぞれ変える
 		sprite->SetPosition({0.0f + i * 150.0f, 0.0f});
 		// スプライトのサイズを変える
@@ -1272,19 +1279,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	// 1枚目のTexture
-	DirectX::ScratchImage mipImages = directXCommon->LoadTexture("resources/uvChecker.png");
-	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource = CreateTextureResource(directXCommon->GetDevice(), metadata);
-	Microsoft::WRL::ComPtr<ID3D12Resource> val = directXCommon->UploadTextureData(textureResource, mipImages);
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource = CreateDepthStencilTextureResource(directXCommon->GetDevice(), WindowsAPI::kClientWidth, WindowsAPI::kClientHeight);
+	//DirectX::ScratchImage mipImages = directXCommon->LoadTexture("resources/monsterBall.png");
+	//const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
+	//Microsoft::WRL::ComPtr<ID3D12Resource> textureResource = CreateTextureResource(directXCommon->GetDevice(), metadata);
+	//Microsoft::WRL::ComPtr<ID3D12Resource> val = directXCommon->UploadTextureData(textureResource, mipImages);
+	//Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource = CreateDepthStencilTextureResource(directXCommon->GetDevice(), WindowsAPI::kClientWidth, WindowsAPI::kClientHeight);
 
 	// metDataを基にSRVの設定
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = metadata.format;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	// 2Dテクスチャ
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	//srvDesc.Format = metadata.format;
+	//srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	//// 2Dテクスチャ
+	//srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	//srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
 	// SRVを作成するDescriptorHeapの場所を決める
 	//D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -1297,7 +1304,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = directXCommon->GetSRVGPUDescriptorHandle(1);
 
 	// SRVの生成
-	directXCommon->GetDevice()->CreateShaderResourceView(textureResource.Get(), &srvDesc, textureSrvHandleCPU);
+	//directXCommon->GetDevice()->CreateShaderResourceView(textureResource.Get(), &srvDesc, textureSrvHandleCPU);
 
 	// DSVの設定
 	//D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};

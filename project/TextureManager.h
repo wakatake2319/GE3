@@ -36,6 +36,10 @@ private:
 	// テクスチャデータ
 	std::vector<TextureData> textureDatas;
 
+	// SRVインデックスの開始番号
+	static uint32_t kSRVIndexTop;
+
+
 public:
 
 	// 初期化
@@ -50,7 +54,8 @@ public:
 	void LoadTexture(const std::string& filePath);
 
 	// SRVインデックスの開始番号
-	static uint32_t kSRVIndexTop;
-
+	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
+	// テクスチャ番号からGPUハンドルを取得
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(uint32_t textureIndex);
 
 };
