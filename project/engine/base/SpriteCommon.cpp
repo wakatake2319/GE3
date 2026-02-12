@@ -154,7 +154,7 @@ void SpriteCommon::InitializeGraphicsPipeline() {
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	// 裏面(時計回り)を表示しない(D3D12_CULL_MODE_BACK)
 	// D3D12_CULL_MODE_NONEで両面表示
-	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	// 三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 

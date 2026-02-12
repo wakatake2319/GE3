@@ -65,6 +65,29 @@ public:
 	// テクスチャ変更
 	//void cahngeTexture(std::string textureFilePath);
 
+	// アンカーポイントのgetter
+	const Vector2& GetAnchorPoint() const { return anchorPoint_; }
+	// アンカーポイントのsetter
+	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint_ = anchorPoint; }
+
+	
+	// フリップ
+	bool isFlipX_ = false;
+	bool isFlipY_ = false;
+
+
+	// フリップXのgetter
+	bool GetIsFlipX() const { return isFlipX_; }
+	// フリップXのsetter
+	void SetIsFlipX(bool isFlipX) { this->isFlipX_ = isFlipX; }
+
+	// フリップYのgetter
+	bool GetIsFlipY() const { return isFlipY_; }
+	// フリップYのsetter
+	void SetIsFlipY(bool isFlipY) { this->isFlipY_ = isFlipY; }
+
+	void spriteImGui(int index);
+
 private:
 	// VertexResourceを作る
 	void CreateVertexResource();
@@ -123,4 +146,7 @@ private:
 
 	// テクスチャ番号
 	uint32_t textureIndex_ = 0;
+
+	// アンカーポイント
+	Vector2 anchorPoint_ = {0.0f, 0.0f};
 };

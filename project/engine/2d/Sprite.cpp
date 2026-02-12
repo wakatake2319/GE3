@@ -135,24 +135,42 @@ void Sprite::MapTransformationMatrixResource() {
 
 // 更新処理
 void Sprite::Update() {
+	// アンカーポイント-反映処理-
+	float left = 0.0f - anchorPoint_.x;
+	float right = 1.0f - anchorPoint_.x;
+	float top = 0.0f - anchorPoint_.y;
+	float bottom = 1.0f - anchorPoint_.y;
+
+	// 左右反転
+	if (isFlipX_) {
+		left = -left;
+		right = -right;
+	}
+	// 上下反転
+	if (isFlipY_) {
+		top = -top;
+		bottom = -bottom;
+	}
+
+
 	// 頂点リソースにデータを書き込む(4点分)
 	// 拡縮-反映処理-
 	// 左下
-	vertexData[0].position = {0.0f, 1.0f, 0.0f, 1.0f};
+	vertexData[0].position = {left, bottom, 0.0f, 1.0f};
 	vertexData[0].texcoord = {0.0f, 1.0f};
 	vertexData[0].normal = {0.0f, 0.0f, -1.0f};
 	// 左上
-	vertexData[1].position = {0.0f, 0.0f, 0.0f, 1.0f};
+	vertexData[1].position = {left, top, 0.0f, 1.0f};
 	vertexData[1].texcoord = {0.0f, 0.0f};
 	vertexData[1].normal = {0.0f, 0.0f, -1.0f};
 
 	// 右下
-	vertexData[2].position = {1.0f, 1.0f, 0.0f, 1.0f};
+	vertexData[2].position = {right, bottom, 0.0f, 1.0f};
 	vertexData[2].texcoord = {1.0f, 1.0f};
 	vertexData[2].normal = {0.0f, 0.0f, -1.0f};
 
 	// 右上
-	vertexData[3].position = {1.0f, 0.0f, 0.0f, 1.0f};
+	vertexData[3].position = {right, top, 0.0f, 1.0f};
 	vertexData[3].texcoord = {1.0f, 0.0f};
 	vertexData[3].normal = {0.0f, 0.0f, -1.0f};
 
@@ -218,3 +236,13 @@ void Sprite::Draw() {
 }
 
 //void Sprite::cahngeTexture(std::string textureFilePath) { textureIndex_ = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath); }
+
+// ImGui表示
+void Sprite::spriteImGui(int index) {
+	ImGui::PushID(index);
+
+	ImGui::Checkbox("IsFlipX", &isFlipX_);
+	ImGui::Checkbox("IsFlipY", &isFlipY_);
+
+	ImGui::PopID();
+}

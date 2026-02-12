@@ -581,7 +581,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TextureManager::GetInstance()->Initialize(directXCommon);
 
 	// テクスチャ呼び出し
-	TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/yukkuri_doyagao.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
 
 
@@ -598,7 +598,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// スプライトの複数化
 	std::vector<Sprite*> sprites_;
 	std::vector<SpriteTransform*> spriteTransforms_;
-	std::vector<std::string> texturePaths = {"Resources/monsterBall.png", "Resources/uvChecker.png"};
+	std::vector<std::string> texturePaths = {"Resources/yukkuri_doyagao.png", "Resources/uvChecker.png"};
 	for (uint32_t i = 0; i < 5; ++i) {
 		Sprite* sprite = new Sprite();
 		sprite->Initialize(spriteCommon, texturePaths[i%2]);
@@ -1452,7 +1452,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//ImGui::Checkbox("useMonsterBall", &useMonsterBall);
 			ImGui::End();
 	
-			
+
 			ImGui::Begin("sprite");
 			//ImGui::DragFloat3("rotate.", &transformSprite.rotate.x, 0.01f, -10.0f, 10.0f);
 			//ImGui::DragFloat3("translate.", &transformSprite.translate.x, 0.1f);
@@ -1464,7 +1464,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		    ImGui::Checkbox("RotateSwitch", &RotateSwitch);
 		    ImGui::Checkbox("ChangeColorSwitch", &ChangeColorSwitch);
 		    ImGui::Checkbox("ScaleSwitch", &ScaleSwitch);
-			ImGui::End();
+		    for (int i = 0; i < sprites_.size(); ++i) {
+			    sprites_[i]->spriteImGui(i);
+		    }
+		    ImGui::End();
 	
 	
 	
