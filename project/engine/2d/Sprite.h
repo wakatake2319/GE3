@@ -1,0 +1,172 @@
+#pragma once
+#include "base/MathTypes.h"
+#include "base/Math.h"
+#include <wrl.h>  
+#include <d3d12.h> 
+#include "base/DirectXCommon.h"
+
+
+// 前方宣言
+class SpriteCommon;
+
+class Sprite {
+public:
+	struct VertexData {
+		Vector4 position;
+		Vector2 texcoord;
+		Vector3 normal;
+	};
+	struct Material {
+		Vector4 color;
+		int32_t enableLighting;
+		float paddding[3];
+		Matrix4x4 uvTransform;
+	};
+
+	// 座標変換行列データ
+	struct TransformationMatrix {
+		Matrix4x4 WVP;
+		Matrix4x4 World;
+	};
+
+	static const uint32_t kVertexCount = 4;
+	static const uint32_t kIndexCount = 6;
+	static const uint32_t kSubdivision = 32;
+
+	// 初期化
+	void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
+
+	// 更新処理
+	void Update();
+
+	// 描画処理
+	void Draw();
+
+	// 座標のgetter
+	const Vector2& GetPosition() const { return position_; }
+	// 座標のsetter
+	void SetPosition(const Vector2& position) { this->position_ = position; }
+
+	// 回転のgetter
+	float GetRotation() const { return rotation_; }
+	// 回転のsetter
+	void SetRotation(float rotation) { this->rotation_ = rotation; }
+
+	// 色のgetter
+	const Vector4& GetColor() const { return materialData->color; }
+	// 色のsetter
+	void SetColor(const Vector4& color) { materialData->color = color; }
+
+	// 拡縮のgetter
+	const Vector2& GetSize() const { return size_; }
+	// 拡縮のsetter
+	void SetSize(const Vector2& size) { this->size_ = size; }
+
+	// テクスチャ変更
+	//void cahngeTexture(std::string textureFilePath);
+
+	// アンカーポイントのgetter
+	const Vector2& GetAnchorPoint() const { return anchorPoint_; }
+	// アンカーポイントのsetter
+	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint_ = anchorPoint; }
+
+	
+	// フリップ
+	bool isFlipX_ = false;
+	bool isFlipY_ = false;
+
+
+	// フリップXのgetter
+	bool GetIsFlipX() const { return isFlipX_; }
+	// フリップXのsetter
+	void SetIsFlipX(bool isFlipX) { this->isFlipX_ = isFlipX; }
+
+	// フリップYのgetter
+	bool GetIsFlipY() const { return isFlipY_; }
+	// フリップYのsetter
+	void SetIsFlipY(bool isFlipY) { this->isFlipY_ = isFlipY; }
+
+	// ImGui表示
+	void spriteImGui(int index);
+
+	// テクスチャ左上座標
+	Vector2 textureLeftTop_ = {0.0f, 0.0f};
+	// テクスチャ切り出しサイズ
+	Vector2 textureSize_ = {100.0f, 100.0f};
+
+
+	// テクスチャ範囲指定のgetter
+	const Vector2& GetTextureLeftTop() const { return textureLeftTop_; }
+	// テクスチャ範囲指定のsetter
+	void SetTextureLeftTop(const Vector2& textureLeftTop) { this->textureLeftTop_ = textureLeftTop; }
+
+	// テクスチャ切り出しサイズのgetter
+	const Vector2& GetTextureCutSize() const { return textureSize_; }
+	// テクスチャ切り出しサイズのsetter
+	void SetTextureCutSize(const Vector2& textureCutSize) { this->textureSize_ = textureCutSize; }
+
+private:
+	// VertexResourceを作る
+	void CreateVertexResource();
+	// VertexResourceにデータを書き込む
+	void MapVertexResource();
+	// VertexBufferViewを作る
+	void CreateVertexBufferView();
+
+
+	// IndexResourceを作る
+	void CreateIndexResource();
+	// IndexResourceにデータを書き込む
+	void MapIndexResource();
+	// IndexBufferViewを作る
+	void CreateIndexBufferView();
+
+	// マテリアルリソースを作る
+	void CreateMaterialResource();
+	// マテリアルリソースにデータを書き込む
+	void MapMaterialResource();
+
+	// 座標変換行列リソースを作る
+	void CreateTransformationMatrixResource();
+	// 座標変換行列リソースにデータを書き込む
+	void MapTransformationMatrixResource();
+
+	SpriteCommon* spriteCommon_ = nullptr;
+
+	// バッファリソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
+	// マテリアルリソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+	// 座標変換行列リソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> textureResource_;
+
+
+	// バッファリソース内のデータを刺すポイント
+	VertexData* vertexData = nullptr;
+	uint32_t* indexData = nullptr;
+	Material* materialData = nullptr;
+	TransformationMatrix* transformationMatrixData = nullptr;
+	// バッファリソースの使い道を補足するバッファビュー
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU_{};
+
+	// 移動
+	Vector2 position_ = {0.0f, 0.0f};
+	// 回転
+	float rotation_ = 0.0f;
+	// 拡縮
+	Vector2 size_ = {640.0f, 360.0f};
+
+	// テクスチャ番号
+	uint32_t textureIndex_ = 0;
+
+	// アンカーポイント
+	Vector2 anchorPoint_ = {0.0f, 0.0f};
+
+	// テクスチャサイズをイメージに合わせる
+	void AdjustTextureSize();
+};

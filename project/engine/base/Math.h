@@ -13,10 +13,6 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 Matrix4x4 MakeRotateZMatrix(float angle);
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
-struct Vector4 {
-	float x, y, z, w;
-};
-
 class Math {
 
 

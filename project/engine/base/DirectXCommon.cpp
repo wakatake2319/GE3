@@ -19,6 +19,8 @@ using namespace Microsoft::WRL;
 using namespace Logger;
 using namespace stringUtility;
 
+const uint32_t DirectXCommon::kMaxSRVCount = 512;
+
 // 初期化
 void DirectXCommon::Initialize(WindowsAPI* windowsAPI) {
 
@@ -293,7 +295,7 @@ void DirectXCommon::InitializeDescriptorHeaps() {
 	// RTV用ディスクリプタヒープの生成
 	rtvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 	// SRV用ディスクリプタヒープの生成
-	srvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+	srvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 	// DSV用ディスクリプタヒープの生成。Shaderから触らないのでShaderVisibleはfalse
 	dsvDescriptorHeap_ = CreateDescriptorHeap(device_, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 }
@@ -810,3 +812,21 @@ void DirectXCommon::UpdateFixedFPS() {
 	reference_ = std::chrono::steady_clock::now();
 }
 
+// フェンス値を進める
+void DirectXCommon::Signal() {
+	// フェンスの値を更新
+	fenceValue_++;
+	// コマンドキューにシグナルを送る
+	HRESULT hr = commandQueue_->Signal(fence_.Get(), fenceValue_);
+	assert(SUCCEEDED(hr));
+}
+
+// GPU完了待ち
+void DirectXCommon::WaitForGPU() {
+	// コマンド完了待ち
+	if (fence_->GetCompletedValue() < fenceValue_) {
+		HRESULT hr = fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+		assert(SUCCEEDED(hr));
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
+}
