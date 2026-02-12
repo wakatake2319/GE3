@@ -1,7 +1,7 @@
 #include "Sprite.h"
-#include "base/SpriteCommon.h"
-#include <base/Logger.h>
-#include "../../TextureManager.h"
+#include "SpriteCommon.h"
+#include "base/Logger.h"
+#include "base/TextureManager.h"
 using namespace Logger;
 
 void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath) {
