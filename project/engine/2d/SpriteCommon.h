@@ -21,6 +21,6 @@ private:
    void InitializeGraphicsPipeline();  
 
    DirectXCommon* dXCommon_;  
-   Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_; // rootSignature_ を追加  
-   Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_; // pipelineState_ を追加  
+   Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_; 
+   Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_;
 };

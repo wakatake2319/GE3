@@ -24,7 +24,7 @@
 #include <vector>
 //#include <d3d12shader.h>
 //#include <wrl.h>
-#include "base/SpriteCommon.h"
+#include "2d/SpriteCommon.h"
 #include "2d/SpriteTransform.h"
 #include "2d/Sprite.h"
 
@@ -34,7 +34,7 @@
 #include "engine/base/WindowsAPI.h"
 #include "engine/base/DirectXCommon.h"
 #include <CommCtrl.h>
-#include "TextureManager.h"
+#include "base/TextureManager.h"
 
 // デバッグ用
 #pragma comment(lib, "Dbghelp.lib")
