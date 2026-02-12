@@ -4,6 +4,8 @@
 
 
 TextureManager* TextureManager::instance = nullptr;
+// ImGuiで0番を使用するため、1番から使用開始
+uint32_t TextureManager::kSRVIndexTop = 1;
 
 void TextureManager::Initialize(DirectXCommon* dxCommon) {
 	dXCommon_ = dxCommon;
@@ -62,7 +64,7 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 
 
 	// テクスチャデータの要素番号をSRVのインデックスとする
-	uint32_t srvIndex = static_cast<uint32_t>(textureDatas.size() - 1);
+	uint32_t srvIndex = static_cast<uint32_t>(textureDatas.size() - 1) + kSRVIndexTop;
 
 	textureData.srvHandleCPU = dXCommon_->GetSRVCPUDescriptorHandle(srvIndex);
 	textureData.srvHandleGPU = dXCommon_->GetSRVGPUDescriptorHandle(srvIndex);
@@ -80,6 +82,9 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	// 転送用に生成した中間リソースをテクスチャデータ構造体に格納
 	Input::ComPtr<ID3D12Resource> intermediateResource = textureData.intermediateResource = dXCommon_->UploadTextureData(textureData.resource, mipImages);
 
+	// テクスチャ枚数上限をチェック
+	assert(textureDatas.size() + kSRVIndexTop < DirectXCommon::kMaxSRVCount);
+
 	// commandListをcloseし、commandQueue->ExecuteCommandListsを使いキックする
 	ID3D12CommandList* commandLists[] = {dXCommon_->GetCommandList()};
 	dXCommon_->GetCommandList()->Close();
@@ -95,5 +100,5 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 
 	// ここまで来たら転送は終わっているので、intermediateResourceを解放しても良い
 	textureData.intermediateResource.Reset();
-
+	
 }

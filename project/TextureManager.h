@@ -44,10 +44,13 @@ public:
 	// シングルトンインスタンスの取得
 	static TextureManager* GetInstance();
 
-	void LoadTexture(const std::string& filePath);
-
-
 	// 終了
 	void Finalize();
+
+	void LoadTexture(const std::string& filePath);
+
+	// SRVインデックスの開始番号
+	static uint32_t kSRVIndexTop;
+
 
 };
