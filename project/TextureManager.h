@@ -46,6 +46,7 @@ public:
 
 	void LoadTexture(const std::string& filePath);
 
+
 	// 終了
 	void Finalize();
 

@@ -114,6 +114,18 @@ public:
 	// 最大SRV数(最大テクスチャ枚数)
 	static const uint32_t kMaxSRVCount;
 
+	// GetCommandQueue
+	ID3D12CommandQueue* GetCommandQueue() const { return commandQueue_.Get(); }
+
+	// GetCommandAllocator
+	ID3D12CommandAllocator* GetCommandAllocator() const { return commandAllocator_.Get(); }
+
+	// フェンス値を進める
+	void Signal();
+
+	// GPU完了待ち
+	void WaitForGPU();
+
 private:
 	// DirectX12のデバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> device_;

@@ -812,3 +812,21 @@ void DirectXCommon::UpdateFixedFPS() {
 	reference_ = std::chrono::steady_clock::now();
 }
 
+// フェンス値を進める
+void DirectXCommon::Signal() {
+	// フェンスの値を更新
+	fenceValue_++;
+	// コマンドキューにシグナルを送る
+	HRESULT hr = commandQueue_->Signal(fence_.Get(), fenceValue_);
+	assert(SUCCEEDED(hr));
+}
+
+// GPU完了待ち
+void DirectXCommon::WaitForGPU() {
+	// コマンド完了待ち
+	if (fence_->GetCompletedValue() < fenceValue_) {
+		HRESULT hr = fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+		assert(SUCCEEDED(hr));
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
+}

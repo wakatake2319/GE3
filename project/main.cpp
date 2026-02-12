@@ -608,11 +608,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	
-	// コマンドリストの実行
-	directXCommon->BeginCommandList();
-
-	// 中間リソースをまとめて解放
-	TextureManager::GetInstance()->ReleaseIntermediateResources();
 
 
 	// 誰も補足しなかった場合に補足するための関数

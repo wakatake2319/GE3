@@ -1,5 +1,6 @@
 #include "TextureManager.h"
 #include "base/DirectXCommon.h"
+#include <io/Input.h>
 
 
 TextureManager* TextureManager::instance = nullptr;
@@ -41,8 +42,9 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	image = DirectXCommon::LoadTexture(filePath);
 
 	DirectX::ScratchImage mipImages{};
-	// mipmapを作成
+	// mipmapの作成
 	HRESULT hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	assert(SUCCEEDED(hr) && "GenerateMipMaps failed");
 
 	// テクスチャデータを追加
 	textureDatas.resize(textureDatas.size() + 1);
@@ -69,13 +71,29 @@ void TextureManager::LoadTexture(const std::string& filePath) {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
 	// SRVの設定を行う
-	srvDesc.Format = textureData.metadata.format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = textureData.metadata.format;
 	// 設定をもとにSRVの生成
 	dXCommon_->GetDevice()->CreateShaderResourceView(textureData.resource.Get(), &srvDesc, textureData.srvHandleCPU);
 
-	// テクスチャリソースにデータを転送
-	dXCommon_->UploadTextureData(textureData.resource, mipImages);
-
 	// 転送用に生成した中間リソースをテクスチャデータ構造体に格納
-	textureData.intermediateResource = dXCommon_->UploadTextureData(textureData.resource, mipImages);
+	Input::ComPtr<ID3D12Resource> intermediateResource = textureData.intermediateResource = dXCommon_->UploadTextureData(textureData.resource, mipImages);
+
+	// commandListをcloseし、commandQueue->ExecuteCommandListsを使いキックする
+	ID3D12CommandList* commandLists[] = {dXCommon_->GetCommandList()};
+	dXCommon_->GetCommandList()->Close();
+	dXCommon_->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
+
+	// 実行を待つ
+	dXCommon_->Signal();     // フェンス値を進める
+	dXCommon_->WaitForGPU(); // GPU完了待ち
+
+	// 実行が完了したので、allocatorとcommandListをリセットして次のコマンドを積めるようにする
+	dXCommon_->GetCommandAllocator()->Reset();
+	dXCommon_->GetCommandList()->Reset(dXCommon_->GetCommandAllocator(), nullptr);
+
+	// ここまで来たら転送は終わっているので、intermediateResourceを解放しても良い
+	textureData.intermediateResource.Reset();
+
 }
