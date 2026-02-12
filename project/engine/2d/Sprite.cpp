@@ -63,6 +63,9 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
 
 	// 単位行列を書き込んでおく
 	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+
+	// テクスチャサイズをイメージに合わせる
+	AdjustTextureSize();
 }
 
 // VertexResourceを作る
@@ -141,37 +144,51 @@ void Sprite::Update() {
 	float top = 0.0f - anchorPoint_.y;
 	float bottom = 1.0f - anchorPoint_.y;
 
+	const DirectX::TexMetadata& metadata = 
+		TextureManager::GetInstance()->GetMetadata(textureIndex_);
+	float tex_left = textureLeftTop_.x / metadata.width;
+	float tex_right = (textureLeftTop_.x + textureSize_.x) / metadata.width;
+	float tex_top = textureLeftTop_.y / metadata.height;
+	float tex_bottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
+
+
 	// 左右反転
 	if (isFlipX_) {
 		left = -left;
 		right = -right;
+		tex_left = -tex_left;
+		tex_right = -tex_right;
 	}
 	// 上下反転
 	if (isFlipY_) {
 		top = -top;
 		bottom = -bottom;
+		tex_top = -tex_top;
+		tex_bottom = -tex_bottom;
 	}
+
+
 
 
 	// 頂点リソースにデータを書き込む(4点分)
 	// 拡縮-反映処理-
 	// 左下
 	vertexData[0].position = {left, bottom, 0.0f, 1.0f};
-	vertexData[0].texcoord = {0.0f, 1.0f};
+	vertexData[0].texcoord = {tex_left, tex_bottom};
 	vertexData[0].normal = {0.0f, 0.0f, -1.0f};
 	// 左上
 	vertexData[1].position = {left, top, 0.0f, 1.0f};
-	vertexData[1].texcoord = {0.0f, 0.0f};
+	vertexData[1].texcoord = {tex_left, tex_top};
 	vertexData[1].normal = {0.0f, 0.0f, -1.0f};
 
 	// 右下
 	vertexData[2].position = {right, bottom, 0.0f, 1.0f};
-	vertexData[2].texcoord = {1.0f, 1.0f};
+	vertexData[2].texcoord = {tex_right, tex_bottom};
 	vertexData[2].normal = {0.0f, 0.0f, -1.0f};
 
 	// 右上
 	vertexData[3].position = {right, top, 0.0f, 1.0f};
-	vertexData[3].texcoord = {1.0f, 0.0f};
+	vertexData[3].texcoord = {tex_right, tex_top};
 	vertexData[3].normal = {0.0f, 0.0f, -1.0f};
 
 	// インデックスリソースにデータを書き込む(6点分)
@@ -244,5 +261,21 @@ void Sprite::spriteImGui(int index) {
 	ImGui::Checkbox("IsFlipX", &isFlipX_);
 	ImGui::Checkbox("IsFlipY", &isFlipY_);
 
+	// テクスチャ切り取りサイズ
+	ImGui::DragFloat2("TextureCutSize", &textureSize_.x, 1.0f, 0.0f, 4096.0f);
+
+
 	ImGui::PopID();
 }
+
+// テクスチャサイズをイメージに合わせる
+void Sprite::AdjustTextureSize() {
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetadata(textureIndex_);
+	textureSize_.x = static_cast<float>(metadata.width);
+	textureSize_.y = static_cast<float>(metadata.height);
+
+	// 画像サイズをテクスチャサイズに合わせる
+	size_ = textureSize_;
+
+}
+

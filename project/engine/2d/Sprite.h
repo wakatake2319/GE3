@@ -86,7 +86,24 @@ public:
 	// フリップYのsetter
 	void SetIsFlipY(bool isFlipY) { this->isFlipY_ = isFlipY; }
 
+	// ImGui表示
 	void spriteImGui(int index);
+
+	// テクスチャ左上座標
+	Vector2 textureLeftTop_ = {0.0f, 0.0f};
+	// テクスチャ切り出しサイズ
+	Vector2 textureSize_ = {100.0f, 100.0f};
+
+
+	// テクスチャ範囲指定のgetter
+	const Vector2& GetTextureLeftTop() const { return textureLeftTop_; }
+	// テクスチャ範囲指定のsetter
+	void SetTextureLeftTop(const Vector2& textureLeftTop) { this->textureLeftTop_ = textureLeftTop; }
+
+	// テクスチャ切り出しサイズのgetter
+	const Vector2& GetTextureCutSize() const { return textureSize_; }
+	// テクスチャ切り出しサイズのsetter
+	void SetTextureCutSize(const Vector2& textureCutSize) { this->textureSize_ = textureCutSize; }
 
 private:
 	// VertexResourceを作る
@@ -149,4 +166,7 @@ private:
 
 	// アンカーポイント
 	Vector2 anchorPoint_ = {0.0f, 0.0f};
+
+	// テクスチャサイズをイメージに合わせる
+	void AdjustTextureSize();
 };
